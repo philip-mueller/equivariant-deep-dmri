@@ -143,7 +143,7 @@ def SH_P_AngularKernel(ls: List[int],
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)
-    :return Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
+    :return: Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
         where Y.type.dim = sum((2*l + 1) for l in ls)
     """
     Q_out = Q_sampling_schema_out.Q if Q_sampling_schema_out is not None else 1
@@ -182,7 +182,7 @@ def SH_Q_AngularKernel(ls: List[int],
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)
-    :return Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
+    :return: Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
         where M_all = sum((2*l + 1) for l)
     """
     Q_diff_vectors = compute_Q_diff_vectors(Q_sampling_schema_out, Q_sampling_schema_in,
@@ -225,7 +225,7 @@ def SH_PQDiff_AngularKernel(ls: List[int],
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)
-    :return Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
+    :return: Dim (num_Q_diff_vectors x num_P_diff_vectors x M_all)
         where M_all = sum((2*l + 1) for l)
     """
     Q_diff_vectors = compute_Q_diff_vectors(Q_sampling_schema_out, Q_sampling_schema_in,

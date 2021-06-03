@@ -14,9 +14,9 @@ class Q_SamplingSchema:
         :param b0_eps: eps value such that all q-vectors with length <b0_eps are treated as b=0.
             Only used if b0_mask = None.
         :param normalize: Whether to normalize the q-length to max=1
-        :radial_basis_size: Size of the radial basis for this sampling scheme, default is number of different q-lengths
+        :param radial_basis_size: Size of the radial basis for this sampling scheme, default is number of different q-lengths
             (max Q) or 0 if Q=1.
-        :radial_basis_eps: Minimum difference between q-length to consider them as different.
+        :param radial_basis_eps: Minimum difference between q-length to consider them as different.
         """
         if not isinstance(q_vectors, torch.Tensor):
             q_vectors = torch.tensor(q_vectors)
