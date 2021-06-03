@@ -116,7 +116,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             If true, the vectors in the output sampling schema are normalized to lengths between 0 and 1.
             If the output sampling schema only contains a single 0-vector, no normalization is applied.
         :param scalar_bias: Whether to use a learned bias for each scalar (order 0) output channel.
-        :param: kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
+        :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
             for a paths form input orders l_in to output orders l_out.
             Defaults to using all possible filter orders,
             i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
@@ -125,11 +125,11 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             - dict with int-pairs as keys and list of ints as values that defines
                 for each pair of l_in and l_out the list of l_filter to use.
                 E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
-        :param: use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
+        :param use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
             for zero lengths in the radial filter basis (default is True).
             See zero_length_eps which defines which lengths are treated as zeros.
             This options is useful as for small lengths the angular basis might get very inaccurate.
-        :param: zero_length_eps: The epsilon value for treating lengths as zero (see use_linear_model_for_zero_length).
+        :param zero_length_eps: The epsilon value for treating lengths as zero (see use_linear_model_for_zero_length).
             A length is treated as zero if length < zero_length_eps.
             Only relevant if use_linear_model_for_zero_length is True.
         :param p_radial_basis_type: The radial basis function type used for p-space.
@@ -394,7 +394,7 @@ def EquivariantPLayer(*args, **kwargs):
         If this parameter is set to false, it is not recomputed and the method recompute() needs to be called
         explicitly after parameters of this nn.Module have been updated.
     :param scalar_bias: Whether to use a learned bias for each scalar (order 0) output channel.
-    :param: kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
+    :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
         i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
@@ -403,11 +403,11 @@ def EquivariantPLayer(*args, **kwargs):
         - dict with int-pairs as keys and list of ints as values that defines
             for each pair of l_in and l_out the list of l_filter to use.
             E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
-    :param: use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
+    :param use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
         for zero lengths in the radial filter basis (default is True).
         See zero_length_eps which defines which lengths are treated as zeros.
         This options is useful as for small lengths the angular basis might get very inaccurate.
-    :param: zero_length_eps: The epsilon value for treating lengths as zero (see use_linear_model_for_zero_length).
+    :param zero_length_eps: The epsilon value for treating lengths as zero (see use_linear_model_for_zero_length).
         A length is treated as zero if length < zero_length_eps.
         Only relevant if use_linear_model_for_zero_length is True.
     :param p_radial_basis_type: The radial basis function type used for p-space.
