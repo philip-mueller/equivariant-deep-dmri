@@ -93,7 +93,7 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
-        i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+        i.e. all l_filter with \|l_in - l_out\| <= l_filter <= l_in + l_out.
         Options are:
 
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.
@@ -148,7 +148,7 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
         
         - dict with string keys: defines some constraints which combinations to use.
           The following constraint always holds:
-          |l_p - l_q | <= l_filter <= l_p + l_q
+          \|l_p - l_q\| <= l_filter <= l_p + l_q
           Additionally constraints can be defined by the following keys in the dict:
 
           - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
@@ -233,7 +233,7 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
-        i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+        i.e. all l_filter with \|l_in - l_out\| <= l_filter <= l_in + l_out.
         Options are:
 
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.
@@ -295,7 +295,7 @@ def build_q_reduction_layer(type_in: Union[SphericalTensorType, List[int]], q_sa
           (except the params type_out, q_sampling_schema_out).
 
     :param auto_recompute: Whether to automatically recompute the kernels in each forward pass.
-    :return (reduction_layer, type_out)
+    :return (reduction_layer, type_out):
 
         - reduction_layer: The created q-reduction layer (nn.Module)
         - type_out: The spherical tensor type of the output feature map.

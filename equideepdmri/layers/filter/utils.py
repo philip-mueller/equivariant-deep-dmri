@@ -30,8 +30,8 @@ def tensor_product_in_out(type_in_1: SphericalTensorType, type_out: SphericalTen
                           selection_rule: Callable[[int, int], List[int]], normalization='component') \
         -> Tuple[SphericalTensorType, torch.Tensor]:
     """
-
     Note: based on o3.selection_rule_in_out_sh
+
     :param type_in_1: spherical tensor type of first input to TP
     :param type_out: spherical tensor type of output from TP
     :param selection_rule: selection rule for possible spherical tensor types of second input to TP
@@ -209,7 +209,7 @@ def selection_rule(lmax=None, lfilter=None) -> SelectionRuleInterface:
 def selection_rule_fn(l1: int, l2: int, lmax=None, lfilter=None) -> List[int]:
     """
     selection rule according to the triangle inequality:
-    |l1 - l2| <= l  <= l1 + l2.
+    \|l1 - l2\| <= l  <= l1 + l2.
 
     This inequality is euqivalent to the following inequality system:
     (1) l1 + l2 >= l
@@ -262,9 +262,9 @@ def selection_rule_out_fn(l_out: int, l_diff_to_out_max: int = 1, l_max: int = N
     :param l_max: maximum values for l_1 and l_2 such that l_1 <= l_max and l_2 <= l_max
         default: l_out + l_diff_to_out_max
     :param l_diff_to_out_max: maximum difference between l_1 or l_2 to l_out such that:
-        |l_out - l_1| <= l_diff_to_out_max and |l_out - l_2| <= l_diff_to_out_max
+        \|l_out - l_1\| <= l_diff_to_out_max and \|l_out - l_2\| <= l_diff_to_out_max
         default: 1
-    :param l_in_diff_max: maximum difference between l_1 and l_2 such that: |l_1 - l_2| <= l_in_diff_max
+    :param l_in_diff_max: maximum difference between l_1 and l_2 such that: \|l_1 - l_2\| <= l_in_diff_max
         default: l_out
     :param l_in_filter:
     :param l_pair_filter:

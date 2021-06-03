@@ -81,7 +81,7 @@ class FC(nn.Module):
         """
         Applies the fully connected network to x.
 
-		:param x: Input. Dim (radii_batch_size x dim_in)
+        :param x: Input. Dim (radii_batch_size x dim_in)
         :return: Dim (radii_batch_size x dim_out)
             Note that dim_out = dim_in for num_layers = 0 and dim_out = num_units for num_layers > 0.
         """
@@ -161,8 +161,8 @@ def Cosine_RadialBasis(basis_size: int, max_radius: float,
 
     Note: based on e3nn.radial.CosineBasisModel
 
-    :param basis_size
-    :param max_radius
+    :param basis_size:
+    :param max_radius:
     """
     reference_points = torch.linspace(0, max_radius, steps=basis_size)
     step = reference_points[1] - reference_points[0]
@@ -243,7 +243,8 @@ class Bessel_RadialBasis(RadialBasis):
         \sqrt{\frac{2}{c}} \frac{sin(\frac{n \pi}{c} d)}{d} & 0 \leq x \leq max_radius \\
         0 & otherwise
     \end{cases}
-    c = max_radius (cutoff), n = basis_size, d = distance (in R_{+})"""
+    c = max_radius (cutoff), n = basis_size, d = distance (in R_{+})
+    """
     def __init__(self, basis_size: int, max_radius: float, epsilon=1e-8,
                  num_layers: int = 0, num_units: int = 0, activation_function=None):
         self.model: FC = FC(basis_size,
@@ -259,7 +260,6 @@ class Bessel_RadialBasis(RadialBasis):
 
     def basis(self, x: torch.Tensor) -> torch.Tensor:
         """
-
         :param x: Dim (radii_batch_size)
         :return: Dim (radii_batch_size x basis_size)
         """
@@ -270,7 +270,6 @@ class Bessel_RadialBasis(RadialBasis):
 
     def forward(self, x):
         """
-
         :param x: Dim (radii_batch_size)
         :return: Dim (radii_batch_size x model.dim_out)
         """

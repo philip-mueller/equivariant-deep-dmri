@@ -39,7 +39,7 @@ class AngularKernelBasis:
         """
         Checks that the dimensions of the angular kernel are valid for given values.
 
-		:param Q_out: q-sampling schema size of output feature map.
+        :param Q_out: q-sampling schema size of output feature map.
         :param Q_in: q-sampling schema size of input feature map.
         :param num_P_diff_vectors: number of different p-differences.
         :param kernel_name: Name of the kernel (for debug).

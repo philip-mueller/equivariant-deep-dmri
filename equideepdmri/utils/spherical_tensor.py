@@ -61,7 +61,7 @@ class SphericalTensorType:
         """
         Number of channels for order l.
 
-		:param l:
+        :param l:
         :return:
         """
         return self.multiplicities[l] if l <= self.l_max else 0
@@ -70,7 +70,7 @@ class SphericalTensorType:
         """
         Slice of an spherical tensor representing the data of all channels of a given order l.
 
-		:param l:
+        :param l:
         :return: Slice of length C_l*(2l+1)
         """
         start_index = self.order_start_indices[l]
@@ -81,7 +81,7 @@ class SphericalTensorType:
         """
         Slice of an spherical tensor representing the data of channel c_l of given order l.
 
-		:param l:
+        :param l:
         :param c_l: 0-based channel index (within the given order l)
         :return: Slice of length (2l+1)
         """

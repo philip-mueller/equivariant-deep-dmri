@@ -105,7 +105,7 @@ class QLengthWeightedAvgPool(nn.Module, Recomputable):
         """
         Applies the layer to input feature map x.
 
-		:param x: Dim (N x dim_in_out x Q_in x P_z x P_y x P_x)
+        :param x: Dim (N x dim_in_out x Q_in x P_z x P_y x P_x)
 
             - N: batch size
             - dim_in_out: size of the spherical tensor at each point of the input/output feature map.

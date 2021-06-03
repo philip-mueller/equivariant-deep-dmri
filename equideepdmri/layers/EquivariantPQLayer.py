@@ -121,7 +121,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
         :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
             for a paths form input orders l_in to output orders l_out.
             Defaults to using all possible filter orders,
-            i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+            i.e. all l_filter with  \|l_in - l_out\| <= l_filter <= l_in + l_out.
             Options are:
 
             - dict with key "lmax" and int value which additionally defines a maximum l_filter.
@@ -190,7 +190,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             
             - dict with string keys: defines some constraints which combinations to use.
               The following constraint always holds:
-              |l_p - l_q | <= l_filter <= l_p + l_q
+              \|l_p - l_q\| <= l_filter <= l_p + l_q
               Additionally constraints can be defined by the following keys in the dict:
 
               - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
@@ -413,7 +413,7 @@ def EquivariantPLayer(*args, **kwargs):
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
-        i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+        i.e. all l_filter with  \|l_in - l_out\| <= l_filter <= l_in + l_out.
         Options are:
 
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.

@@ -82,7 +82,6 @@ class Q_SamplingSchema:
     @property
     def q_lengths(self) -> torch.Tensor:
         """
-
         :return: Dim (Q)
         """
         return torch.norm(self.q_vectors, p=2, dim=1)
@@ -115,8 +114,8 @@ class Q_SamplingSchema:
     def extract_b0_channels(self, tensor_field: torch.Tensor) -> torch.Tensor:
         """
         Extracts only the Q channels with b=0 (based on self) of the given tensor field.
-
-		:param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
+        
+        :param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
         :return: (N x dim_in x num_b0_channels x P_z x P_y x P_x)
         """
         assert tensor_field.ndim == 6

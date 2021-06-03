@@ -103,7 +103,7 @@ class VoxelWiseSegmentationNetwork(nn.Module):
             - kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
               for a paths form input orders l_in to output orders l_out.
               Defaults to using all possible filter orders,
-              i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+              i.e. all l_filter with  \|l_in - l_out \| <= l_filter <= l_in + l_out.
               Options are:
 
               - dict with key "lmax" and int value which additionally defines a maximum l_filter.
@@ -158,7 +158,7 @@ class VoxelWiseSegmentationNetwork(nn.Module):
               
               - dict with string keys: defines some constraints which combinations to use.
                 The following constraint always holds:
-                |l_p - l_q | <= l_filter <= l_p + l_q
+                \|l_p - l_q\| <= l_filter <= l_p + l_q
                 Additionally constraints can be defined by the following keys in the dict:
                 
                 - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
@@ -178,7 +178,7 @@ class VoxelWiseSegmentationNetwork(nn.Module):
             - kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
               for a paths form input orders l_in to output orders l_out.
               Defaults to using all possible filter orders,
-              i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+              i.e. all l_filter with  \|l_in - l_out\| <= l_filter <= l_in + l_out.
               Options are:
             
               - dict with key "lmax" and int value which additionally defines a maximum l_filter.
@@ -296,7 +296,7 @@ class VoxelWiseSegmentationNetwork(nn.Module):
         """
         Applies the network to the input scan batch.
 
-		:param x: Input feature map. Dim (N x Q_in x P_z x P_y x P_x) with
+        :param x: Input feature map. Dim (N x Q_in x P_z x P_y x P_x) with
             - N: batch size
             - Q_in: size of the input q-space sampling schema.
             - P_z, P_y, P_x: p-space size.
