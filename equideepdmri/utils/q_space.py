@@ -115,7 +115,8 @@ class Q_SamplingSchema:
     def extract_b0_channels(self, tensor_field: torch.Tensor) -> torch.Tensor:
         """
         Extracts only the Q channels with b=0 (based on self) of the given tensor field.
-        :param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
+
+		:param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
         :return: (N x dim_in x num_b0_channels x P_z x P_y x P_x)
         """
         assert tensor_field.ndim == 6
@@ -147,6 +148,7 @@ class Q_SamplingSchema:
         """
         Combines all b=0 channels to a single b=0 channel, leaves the other channels unchanged.
         The combined b=0 channel will be the first channel.
+        
         :param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
         :param combination_fn: Function to combine the different b=0 channels. Default: mean
         :param kwargs:

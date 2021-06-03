@@ -299,6 +299,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Applies the layer to input feature map x.
+
         :param x: Input feature map. Dim (N x dim_in x [Q_in] x P_z x P_y x P_x) with
             - N: batch size
             - dim_in: size of the spherical tensor at each point of the input feature map.

@@ -18,7 +18,6 @@ class RadialKernelBasis(nn.Module):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: Dim (Q_out x Q_in x num_P_diff_vectors x scalar_basis_size)
         """
         raise NotImplementedError
@@ -45,7 +44,6 @@ class Constant_RadialKernelBasis(RadialKernelBasis):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: (Q_out x Q_in x num_P_diff_vectors x 1)
         """
         return self.constant_tensor
@@ -77,7 +75,6 @@ class LengthQIn_RadialKernelBasis(RadialKernelBasis):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: (Q_out x Q_in x num_P_diff_vectors x radial_basis.number_of_basis)
         """
         scalar_values = self.radial_basis(self.lengths_Q_in)  # (Q_in, radial_basis.number_of_basis)
@@ -112,7 +109,6 @@ class LengthQOut_RadialKernelBasis(RadialKernelBasis):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: (Q_out x Q_in x num_P_diff_vectors x radial_basis.number_of_basis)
         """
         scalar_values = self.radial_basis(self.lengths_Q_out)  # (Q_out, radial_basis.number_of_basis)
@@ -147,7 +143,6 @@ class LengthPDiff_RadialKernelBasis(RadialKernelBasis):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: (Q_out x Q_in x num_P_diff_vectors x radial_basis.number_of_basis)
         """
         scalar_values = self.radial_basis(self.lengths_P_diff)  # (num_P_diff_vectors, radial_basis.number_of_basis)
@@ -193,6 +188,7 @@ class CombinedRadialKernelBasis(RadialKernelBasis):
     def forward(self) -> torch.Tensor:
         """
         Dim (Q_out x Q_in x num_P_diff_vectors x scalar_basis_size)
+        
         :return:
         """
         scalar_kernel_tensors = [scalar_kernel() for scalar_kernel in self.scalar_kernels]

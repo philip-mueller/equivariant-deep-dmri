@@ -24,7 +24,6 @@ class AngularKernelBasis:
 
     def __init__(self, kernel: SphericalTensor, kernel_mask: torch.BoolTensor, kernel_type_name: str):
         """
-
         :param kernel: The kernel itself. Dim (num_non_zero_QP x kernel.type.dim)
         :param kernel_mask: Mask that is True for indices where the kernel is non_zero
             (len(kernel_mask.nonzero()) == num_non_zero_QP).
@@ -39,7 +38,8 @@ class AngularKernelBasis:
     def check_validity(self, Q_out: int, Q_in: int, num_P_diff_vectors: int, kernel_name: str = 'kernel'):
         """
         Checks that the dimensions of the angular kernel are valid for given values.
-        :param Q_out: q-sampling schema size of output feature map.
+
+		:param Q_out: q-sampling schema size of output feature map.
         :param Q_in: q-sampling schema size of input feature map.
         :param num_P_diff_vectors: number of different p-differences.
         :param kernel_name: Name of the kernel (for debug).
@@ -58,6 +58,7 @@ class AngularKernelBasis:
 
 """
 Function interface for creation of angular kernels.
+
 :param l_s: Filter orders l for which to create the kernel.
 :param Q_sampling_schema_out: q-sampling schema of output feature map.
 :param Q_sampling_schema_in: q-sampling schema size of input feature map
@@ -77,7 +78,6 @@ def TP_AngularKernel(ls: List[int],
                      selection_rule: SelectionRuleOutInterface = selection_rule_out(),
                      normalization='component') -> AngularKernelBasis:
         """
-
         :param kernel_1:
         :param kernel_2:
         :param l_fitler: which filter orders to produce, default is all possible
@@ -141,8 +141,9 @@ def SH_P_AngularKernel(ls: List[int],
                        length_eps: float,
                        normalization='component') -> AngularKernelBasis:
     """
-    Angular Kernel based on
-    :param ls: List of ranks for which to create the angular kernel
+    Angular Kernel based on.
+
+	:param ls: List of ranks for which to create the angular kernel
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)
@@ -179,8 +180,9 @@ def SH_Q_AngularKernel(ls: List[int],
                        normalize_Q_before_diff=True,
                        normalization='component') -> AngularKernelBasis:
     """
-    Angular Kernel based on
-    :param ls: List of ranks for which to create the angular kernel
+    Angular Kernel based on.
+
+	:param ls: List of ranks for which to create the angular kernel
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)
@@ -221,8 +223,9 @@ def SH_PQDiff_AngularKernel(ls: List[int],
                             normalize_Q_before_diff=True,
                             normalization='component') -> AngularKernelBasis:
     """
-    Angular Kernel based on
-    :param ls: List of ranks for which to create the angular kernel
+    Angular Kernel based on.
+
+	:param ls: List of ranks for which to create the angular kernel
         in increasing order
     :param P_diff_vectors: Dim (num_P_diff_vectors, 3)
     :param Q_diff_vectors: Dim (num_Q_diff_vectors, 3)

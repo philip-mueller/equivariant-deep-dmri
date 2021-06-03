@@ -272,7 +272,8 @@ class VoxelWiseSegmentationNetwork(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Applies the network to the input scan batch.
-        :param x: Input feature map. Dim (N x Q_in x P_z x P_y x P_x) with
+
+		:param x: Input feature map. Dim (N x Q_in x P_z x P_y x P_x) with
             - N: batch size
             - Q_in: size of the input q-space sampling schema.
             - P_z, P_y, P_x: p-space size.

@@ -96,8 +96,9 @@ def tensor_product_out(ls_out: List[int], selection_rule: Callable[[int], List[T
 
 def compute_channel_mapping_matrix(tensor_type: SphericalTensorType) -> torch.Tensor:
     """
-    Note: inspired by rs.map_mul_to_Rs
-    :param tensor_type:
+    Note: inspired by rs.map_mul_to_Rs.
+
+	:param tensor_type:
     :return: Dim (tensor_type.dim x tensor_type.C)
     """
     # (tensor_type.dim x tensor_type.C)
@@ -162,8 +163,9 @@ sh = spherical_harmonics_xyz
 
 def normalize_sh(Y: SphericalTensor, normalization: str = 'norm'):
     """
-    see kernel_mod.py line 20
-    :param Y: spherical tensor. Dim (num_vectors, M_all)
+    see kernel_mod.py line 20.
+
+	:param Y: spherical tensor. Dim (num_vectors, M_all)
     :return:
     """
     # Normalize the spherical harmonics
@@ -178,7 +180,6 @@ def normalize_sh(Y: SphericalTensor, normalization: str = 'norm'):
 
 def normalized_sh(ls: List[int], vectors: torch.Tensor, normalization: str = 'component') -> SphericalTensor:
     """
-
     :param ls:
     :param vectors: (num_vectors, 3)
     :param normalization:

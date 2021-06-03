@@ -120,7 +120,6 @@ class Kernel(nn.Module):
 
     def _compute_kernel(self, scalar_kernel_tensor: torch.Tensor) -> torch.Tensor:
         """
-
         :param scalar_kernel_tensor: (Q_out x Q_in x num_P_diff_vectors x scalar_kernel.scalar_basis_size {s})
         :return: (num_non_zero_QP {n} x type_out.dim {o} x type_in.dim {i})
         """
@@ -148,7 +147,6 @@ class Kernel(nn.Module):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: kernel (Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim)
         """
         # ----- build the kernel by combining with scalar kernel
@@ -200,7 +198,6 @@ def mul_scalar_angular_kernel(filter_representations: List[Tuple[int, int, int, 
                               filter_dim: int,
                               scalar_kernel_tensor: torch.Tensor, angular_kernel_tensor: torch.Tensor) -> torch.Tensor:
     """
-
     :param scalar_kernel_tensor: (num_non_zero_QP {n} x angular_filter_type.C {c})
         scalar kernel already combined with the weights
     :param angular_kernel_tensor: (num_non_zero_QP {n} x angular_kernel.kernel.type.dim)
@@ -247,7 +244,6 @@ def compute_TP_mixing_matrix_for_filter(type_in: SphericalTensorType, type_out: 
                                         type_angular_filter: SphericalTensorType,
                                         selection_rule: SelectionRuleInterface, normalization: str) -> SparseTensor:
     """
-
     Based on e3nn -> rs._tensor_product_in_out() but adapted to account for type_angular_filter
 
     :param type_in:
