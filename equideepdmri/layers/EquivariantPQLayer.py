@@ -59,25 +59,27 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             For all orders corresponding to out-of-range indices the number of channels is 0.
         :param kernel_definition: Which filter basis to use in this layer.
             Valid options are:
+            
             - "p_space": to use the p-space filter basis
-                using only p-space coordinate offsets in the angular and radial part.
+              using only p-space coordinate offsets in the angular and radial part.
             - "q_space": to use the q-space filter basis
-                using only q-space coordinate offsets in the angular part
-                and q-space coordinates from input and output in the radial part.
+              using only q-space coordinate offsets in the angular part
+              and q-space coordinates from input and output in the radial part.
             - "pq_diff": to use the pq-diff filter basis
-                using difference between p- and q-space coordinate offsets in the angular part
-                and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
+              using difference between p- and q-space coordinate offsets in the angular part
+              and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
             - "pq_TP": to use the TP (tensor product) filter basis
-                using the tensor product of the p- and q-space filters in the angular part
-                and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
+              using the tensor product of the p- and q-space filters in the angular part
+              and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
             - "sum(<filters>)": where <filters> is a ";"-separated list (without spaces) of valid options for kernel_definition,
-                e.g. "sum(pq_diff;p_space)" or "sum(pq_diff;q_space)". This uses the sum of the named basis filters.
+              e.g. "sum(pq_diff;p_space)" or "sum(pq_diff;q_space)". This uses the sum of the named basis filters.
             - "concat(<filters>)" where <filters> is a ";"-separated list (without spaces) of strings "<output_channels>:<filter_type>"
-                where <output_channels> lists the channels of each order where the named filter is to be used
-                (e.g. "[3, 4]" to use it for 3 scalar and 4 vector output channelw) and
-                <filter_type> names a valid kernel_definition to use for these output channels.
-                The number of all concatenated channels needs to math type_out.
-                Example: "concat([3,4]:pq_diff,[5,2,1]:p_space)" which would require type_out = [8,6,1]
+              where <output_channels> lists the channels of each order where the named filter is to be used
+              (e.g. "[3, 4]" to use it for 3 scalar and 4 vector output channelw) and
+              <filter_type> names a valid kernel_definition to use for these output channels.
+              The number of all concatenated channels needs to math type_out.
+              Example: "concat([3,4]:pq_diff,[5,2,1]:p_space)" which would require type_out = [8,6,1]
+
         :param p_kernel_size: Size of the kernel in p-space.
             Note that the kernel always covers the whole q-space (as it is not translationally equivariant),
             so there is no q_kernel_size.
@@ -121,10 +123,12 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             Defaults to using all possible filter orders,
             i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
             Options are:
+
             - dict with key "lmax" and int value which additionally defines a maximum l_filter.
             - dict with int-pairs as keys and list of ints as values that defines
-                for each pair of l_in and l_out the list of l_filter to use.
-                E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+              for each pair of l_in and l_out the list of l_filter to use.
+              E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+
         :param use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
             for zero lengths in the radial filter basis (default is True).
             See zero_length_eps which defines which lengths are treated as zeros.
@@ -137,12 +141,14 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             Note that this parameter is ignored if there is no basis filter using p-space.
         :param p_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for p-space.
             Valid keys in this dict are:
+            
             - num_layers: Number of layers in the FC applied to the radial basis function.
-                If num_layers = 0 (default) then no FC is applied to the radial basis function.
+              If num_layers = 0 (default) then no FC is applied to the radial basis function.
             - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-                No default, this parameter is required and must be >0 if num_layers > 0.
+              No default, this parameter is required and must be >0 if num_layers > 0.
             - activation_function: activation function used in the FC applied to the radial basis function,
-                valid are "relu" (default) or "swish"
+              valid are "relu" (default) or "swish"
+            
             Note that this parameter is ignored if there is no basis filter using p-space.
         :param q_radial_basis_type: The radial basis function type used for q-space (q-in and q-out).
             Valid options are "gaussian" (default), "cosine", "bessel".
@@ -155,12 +161,14 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             Defaults to q_radial_basis_type.
         :param q_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for q-space.
             Valid keys in this dict are:
+            
             - num_layers: Number of layers in the FC applied to the radial basis function.
-                If num_layers = 0 (default) then no FC is applied to the radial basis function.
+              If num_layers = 0 (default) then no FC is applied to the radial basis function.
             - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-                No default, this parameter is required and must be >0 if num_layers > 0.
+              No default, this parameter is required and must be >0 if num_layers > 0.
             - activation_function: activation function used in the FC applied to the radial basis function,
-                valid are "relu" (default) or "swish"
+              valid are "relu" (default) or "swish"
+                
             Note that this parameter is ignored if there is no basis filter using q-space.
         :param q_out_radial_basis_params: A dict of additional parameters for the radial basis function used for q-out (q-space of output feature map).
             See q_radial_basis_params but only for q-out.
@@ -179,17 +187,21 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             Rule defining for the TP filter which pairs of l_p and l_q to use for each l_filter.
             Defaults to "TP\pm 1".
             Options are:
+            
             - dict with string keys: defines some constraints which combinations to use.
-                The following constraint always holds:
-                |l_p - l_q | <= l_filter <= l_p + l_q
-                Additionally constraints can be defined by the following keys in the dict:
-                - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
-                    Default to 1 (as in "TP\pm 1")
-                - "l_max" (optional): Maximum value for l_p and l_q.
-                - "l_in_diff_max" (optional): Maximum difference between l_p and l_q.
+              The following constraint always holds:
+              |l_p - l_q | <= l_filter <= l_p + l_q
+              Additionally constraints can be defined by the following keys in the dict:
+
+              - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
+                Default to 1 (as in "TP\pm 1")
+              - "l_max" (optional): Maximum value for l_p and l_q.
+              - "l_in_diff_max" (optional): Maximum difference between l_p and l_q.
+
             - dict with ints as keys and list of int-pairs as values that defines
-                for each l_filter the used pairs of l_p and l_q.
-                E.g. {0: [(0, 0), (1, 1)], 1: [(0, 1), (1, 0), (1, 1)]}
+              for each l_filter the used pairs of l_p and l_q.
+              E.g. {0: [(0, 0), (1, 1)], 1: [(0, 1), (1, 0), (1, 1)]}
+                
             Note that this parameter is ignored if no TP-filter basis is used.
         :param normalization: The normalization used for the spherical harmonics and the tensor product.
             Valid values are "component" (default) or "norm".
@@ -301,18 +313,21 @@ class EquivariantPQLayer(nn.Module, Recomputable):
         Applies the layer to input feature map x.
 
         :param x: Input feature map. Dim (N x dim_in x [Q_in] x P_z x P_y x P_x) with
+        
             - N: batch size
             - dim_in: size of the spherical tensor at each point of the input feature map.
             - Q_in: size of the input q-space sampling schema.
-                Optional: if no q_sampling_schema_in is specified (not None), the input is assumed to have only p-space but no q-space.
+              Optional: if no q_sampling_schema_in is specified (not None), the input is assumed to have only p-space but no q-space.
             - P_z, P_y, P_x: p-space size.
+
         :return: The output feature map. Dim (N x dim_out x [Q_out] x P_z_out x P_y_out x P_x_out) with
+
             - N: batch size
             - dim_out: size of the spherical tensor at each point of the output feature map.
             - Q_out: size of the output q-space sampling schema.
-                Optional: if no q_sampling_schema_out is specified (not None), the output has only p-space but no q-space.
+              Optional: if no q_sampling_schema_out is specified (not None), the output has only p-space but no q-space.
             - P_z_out, P_y_out, P_x_out: p-space size of the output feature map.
-                Depends on P_z, P_y, P_x, p_kernel_size, p_padding, p_stride, and p_dilation.
+              Depends on P_z, P_y, P_x, p_kernel_size, p_padding, p_stride, and p_dilation.
         """
         assert isinstance(x, torch.Tensor)
         if self.has_Q_in:
@@ -400,10 +415,12 @@ def EquivariantPLayer(*args, **kwargs):
         Defaults to using all possible filter orders,
         i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
         Options are:
+
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.
         - dict with int-pairs as keys and list of ints as values that defines
-            for each pair of l_in and l_out the list of l_filter to use.
-            E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+          for each pair of l_in and l_out the list of l_filter to use.
+          E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+
     :param use_linear_model_for_zero_length: Whether to use a linear point-wise model instead of the normal kernel
         for zero lengths in the radial filter basis (default is True).
         See zero_length_eps which defines which lengths are treated as zeros.
@@ -415,12 +432,14 @@ def EquivariantPLayer(*args, **kwargs):
         Valid options are "gaussian" (default), "cosine", "bessel".
     :param p_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for p-space.
         Valid keys in this dict are:
+
         - num_layers: Number of layers in the FC applied to the radial basis function.
-            If num_layers = 0 (default) then no FC is applied to the radial basis function.
+          If num_layers = 0 (default) then no FC is applied to the radial basis function.
         - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-            No default, this parameter is required and must be >0 if num_layers > 0.
+          No default, this parameter is required and must be >0 if num_layers > 0.
         - activation_function: activation function used in the FC applied to the radial basis function,
-            valid are "relu" (default) or "swish"
+          valid are "relu" (default) or "swish"
+
     :param normalization: The normalization used for the spherical harmonics and the tensor product.
         Valid values are "component" (default) or "norm".
     """

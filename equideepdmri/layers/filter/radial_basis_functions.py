@@ -163,7 +163,6 @@ def Cosine_RadialBasis(basis_size: int, max_radius: float,
 
     :param basis_size
     :param max_radius
-
     """
     reference_points = torch.linspace(0, max_radius, steps=basis_size)
     step = reference_points[1] - reference_points[0]
