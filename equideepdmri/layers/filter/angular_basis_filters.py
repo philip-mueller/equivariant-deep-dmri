@@ -56,16 +56,7 @@ class AngularKernelBasis:
         return f'<AngularKernel {self.kernel_type_name} of type {self.kernel.type.multiplicities}>'
 
 
-"""
-Function interface for creation of angular kernels.
 
-:param l_s: Filter orders l for which to create the kernel.
-:param Q_sampling_schema_out: q-sampling schema of output feature map.
-:param Q_sampling_schema_in: q-sampling schema size of input feature map
-:param P_diff_vectors: p-difference vectors. Dim (num_P_diff_vectors x 3)
-:param length_eps: epsilon for considering vector lengths as non-zero if length > length_eps.
-:return 
-"""
 AngularKernelBasisConstructor = Callable[[List[int], Optional[Q_SamplingSchema], Optional[Q_SamplingSchema], torch.Tensor, float], AngularKernelBasis]
 
 
@@ -78,9 +69,14 @@ def TP_AngularKernel(ls: List[int],
                      selection_rule: SelectionRuleOutInterface = selection_rule_out(),
                      normalization='component') -> AngularKernelBasis:
         """
-        :param kernel_1:
-        :param kernel_2:
-        :param l_fitler: which filter orders to produce, default is all possible
+        Function interface for creation of angular kernels.
+
+        :param l_s: Filter orders l for which to create the kernel.
+        :param Q_sampling_schema_out: q-sampling schema of output feature map.
+        :param Q_sampling_schema_in: q-sampling schema size of input feature map
+        :param P_diff_vectors: p-difference vectors. Dim (num_P_diff_vectors x 3)
+        :param length_eps: epsilon for considering vector lengths as non-zero if length > length_eps.
+        :return:
         """
         Q_out = Q_sampling_schema_out.Q if Q_sampling_schema_out is not None else 1
         Q_in = Q_sampling_schema_in.Q if Q_sampling_schema_in is not None else 1
