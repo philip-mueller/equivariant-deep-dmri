@@ -50,12 +50,13 @@ class QLengthWeightedAvgPool(nn.Module, Recomputable):
             Valid options are "gaussian" (default), "cosine", "bessel".
         :param q_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for q-space.
             Valid keys in this dict are:
+
             - num_layers: Number of layers in the FC applied to the radial basis function.
-                If num_layers = 0 (default) then no FC is applied to the radial basis function.
+              If num_layers = 0 (default) then no FC is applied to the radial basis function.
             - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-                No default, this parameter is required and must be >0 if num_layers > 0.
+              No default, this parameter is required and must be >0 if num_layers > 0.
             - activation_function: activation function used in the FC applied to the radial basis function,
-                valid are "relu" (default) or "swish"
+              valid are "relu" (default) or "swish"
         :param auto_recompute:
             Whether to automatically recompute the kernel in each forward pass.
             By default it is recomputed each time.
@@ -103,13 +104,16 @@ class QLengthWeightedAvgPool(nn.Module, Recomputable):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Applies the layer to input feature map x.
+
         :param x: Dim (N x dim_in_out x Q_in x P_z x P_y x P_x)
+
             - N: batch size
             - dim_in_out: size of the spherical tensor at each point of the input/output feature map.
             - Q_in: size of the input q-space sampling schema.
             - P_z, P_y, P_x: p-space size.
         :return: Dim (N x dim_in_out x P_z x P_y x P_x)
-             N: batch size
+
+            - N: batch size
             - dim_in_out: size of the spherical tensor at each point of the input/output feature map.
             - P_z, P_y, P_x: p-space size (same as input).
         """

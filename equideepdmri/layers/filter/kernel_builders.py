@@ -178,7 +178,6 @@ def build_kernel_from_definition_name(kernel_definition_name: str, has_Q_in, has
                                       sub_kernel_selection_rule: dict = None,
                                       **kwargs) -> KernelDefinitionInterface:
     """
-
     :param kernel_definition_name:
     :param normalization:
     :param radial_basis_type:

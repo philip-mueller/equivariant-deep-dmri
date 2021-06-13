@@ -46,25 +46,27 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
         so there is no q_kernel_size.
     :param kernel: Which filter basis to use in the EquivariantPQLayer layer.
         Valid options are:
+
         - "p_space": to use the p-space filter basis
-            using only p-space coordinate offsets in the angular and radial part.
+          using only p-space coordinate offsets in the angular and radial part.
         - "q_space": to use the q-space filter basis
-            using only q-space coordinate offsets in the angular part
-            and q-space coordinates from input and output in the radial part.
+          using only q-space coordinate offsets in the angular part
+          and q-space coordinates from input and output in the radial part.
         - "pq_diff": to use the pq-diff filter basis
-            using difference between p- and q-space coordinate offsets in the angular part
-            and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
+          using difference between p- and q-space coordinate offsets in the angular part
+          and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
         - "pq_TP": to use the TP (tensor product) filter basis
-            using the tensor product of the p- and q-space filters in the angular part
-            and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
+          using the tensor product of the p- and q-space filters in the angular part
+          and p-space coordinate offsets, q-space coordinates from input and output in the radial part.
         - "sum(<filters>)": where <filters> is a ";"-separated list (without spaces) of valid options for kernel_definition,
-            e.g. "sum(pq_diff;p_space)" or "sum(pq_diff;q_space)". This uses the sum of the named basis filters.
+          e.g. "sum(pq_diff;p_space)" or "sum(pq_diff;q_space)". This uses the sum of the named basis filters.
         - "concat(<filters>)" where <filters> is a ";"-separated list (without spaces) of strings "<output_channels>:<filter_type>"
-            where <output_channels> lists the channels of each order where the named filter is to be used
-            (e.g. "[3, 4]" to use it for 3 scalar and 4 vector output channelw) and
-            <filter_type> names a valid kernel_definition to use for these output channels.
-            The number of all concatenated channels needs to math type_out.
-            Example: "concat([3,4]:pq_diff,[5,2,1]:p_space)" which would require type_out = [8,6,1]
+          where <output_channels> lists the channels of each order where the named filter is to be used
+          (e.g. "[3, 4]" to use it for 3 scalar and 4 vector output channelw) and
+          <filter_type> names a valid kernel_definition to use for these output channels.
+          The number of all concatenated channels needs to math type_out.
+          Example: "concat([3,4]:pq_diff,[5,2,1]:p_space)" which would require type_out = [8,6,1]
+
     :param q_sampling_schema_in: The q-sampling schema of input feature map.
         The q-sampling schema may either be given as a Q_SamplingSchema object,
         a Tensor of size (Q_in, 3) or a list of length Q_in (one element for each vector) of lists of size 3 of floats.
@@ -76,11 +78,13 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
         Note that Q_out is not explicitly given but derived form the length of this parameter.
         If this is None (default) then the output does not have q-space but only p-space.
     :param non_linearity_config: Dict with the following optional keys:
-         - tensor_non_lin: The nonlinearity to use for channels with l>0 (non-scalar channels).
-                Default (and currently only option) is "gated".
-         - scalar_non_lin: The nonlinearity to use for channles with l=0 (scalar channels).
-                Valid options are "swish" and "relu".
-                Default is "swish".
+
+        - tensor_non_lin: The nonlinearity to use for channels with l>0 (non-scalar channels).
+          Default (and currently only option) is "gated".
+        - scalar_non_lin: The nonlinearity to use for channles with l=0 (scalar channels).
+          Valid options are "swish" and "relu".
+          Default is "swish".
+
     :param use_non_linearity: Whether to use a nonlinearity.
     :param auto_recompute: Whether to automatically recompute the kernel in each forward pass.
         By default it is recomputed each time.
@@ -89,23 +93,27 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
-        i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+        i.e. all l_filter with \|l_in - l_out\| <= l_filter <= l_in + l_out.
         Options are:
+
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.
         - dict with int-pairs as keys and list of ints as values that defines
-            for each pair of l_in and l_out the list of l_filter to use.
-            E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+          for each pair of l_in and l_out the list of l_filter to use.
+          E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+
     :param p_radial_basis_type: The radial basis function type used for p-space.
         Valid options are "gaussian" (default), "cosine", "bessel".
         Note that this parameter is ignored if there is no basis filter using p-space.
     :param p_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for p-space.
         Valid keys in this dict are:
+
         - num_layers: Number of layers in the FC applied to the radial basis function.
-            If num_layers = 0 (default) then no FC is applied to the radial basis function.
+          If num_layers = 0 (default) then no FC is applied to the radial basis function.
         - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-            No default, this parameter is required and must be >0 if num_layers > 0.
+          No default, this parameter is required and must be >0 if num_layers > 0.
         - activation_function: activation function used in the FC applied to the radial basis function,
-            valid are "relu" (default) or "swish"
+          valid are "relu" (default) or "swish"
+
         Note that this parameter is ignored if there is no basis filter using p-space.
     :param q_radial_basis_type: The radial basis function type used for q-space (q-in and q-out).
         Valid options are "gaussian" (default), "cosine", "bessel".
@@ -118,12 +126,14 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
         Defaults to q_radial_basis_type.
     :param q_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for q-space.
         Valid keys in this dict are:
+
         - num_layers: Number of layers in the FC applied to the radial basis function.
-            If num_layers = 0 (default) then no FC is applied to the radial basis function.
+          If num_layers = 0 (default) then no FC is applied to the radial basis function.
         - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-            No default, this parameter is required and must be >0 if num_layers > 0.
+          No default, this parameter is required and must be >0 if num_layers > 0.
         - activation_function: activation function used in the FC applied to the radial basis function,
-            valid are "relu" (default) or "swish"
+          valid are "relu" (default) or "swish"
+
         Note that this parameter is ignored if there is no basis filter using q-space.
     :param q_out_radial_basis_params: A dict of additional parameters for the radial basis function used for q-out (q-space of output feature map).
         See q_radial_basis_params but only for q-out.
@@ -135,17 +145,21 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
         Rule defining for the TP filter which pairs of l_p and l_q to use for each l_filter.
         Defaults to "TP\pm 1".
         Options are:
+        
         - dict with string keys: defines some constraints which combinations to use.
-            The following constraint always holds:
-            |l_p - l_q | <= l_filter <= l_p + l_q
-            Additionally constraints can be defined by the following keys in the dict:
-            - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
-                Default to 1 (as in "TP\pm 1")
-            - "l_max" (optional): Maximum value for l_p and l_q.
-            - "l_in_diff_max" (optional): Maximum difference between l_p and l_q.
+          The following constraint always holds:
+          \|l_p - l_q\| <= l_filter <= l_p + l_q
+          Additionally constraints can be defined by the following keys in the dict:
+
+          - "l_diff_to_out_max": Maximum difference between l_p and l_filter as well as l_q and l_filter.
+            Default to 1 (as in "TP\pm 1")
+          - "l_max" (optional): Maximum value for l_p and l_q.
+          - "l_in_diff_max" (optional): Maximum difference between l_p and l_q.
+
         - dict with ints as keys and list of int-pairs as values that defines
-            for each l_filter the used pairs of l_p and l_q.
-            E.g. {0: [(0, 0), (1, 1)], 1: [(0, 1), (1, 0), (1, 1)]}
+          for each l_filter the used pairs of l_p and l_q.
+          E.g. {0: [(0, 0), (1, 1)], 1: [(0, 1), (1, 0), (1, 1)]}
+
         Note that this parameter is ignored if no TP-filter basis is used.
     For additional parameters see EquivariantPQLayer.
     """
@@ -204,11 +218,13 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
         Note that the kernel always covers the whole q-space (as it is not translationally equivariant),
         so there is no q_kernel_size.
     :param non_linearity_config: Dict with the following optional keys:
-         - tensor_non_lin: The nonlinearity to use for channels with l>0 (non-scalar channels).
-                Default (and currently only option) is "gated".
-         - scalar_non_lin: The nonlinearity to use for channles with l=0 (scalar channels).
-                Valid options are "swish" and "relu".
-                Default is "swish".
+
+        - tensor_non_lin: The nonlinearity to use for channels with l>0 (non-scalar channels).
+          Default (and currently only option) is "gated".
+        - scalar_non_lin: The nonlinearity to use for channles with l=0 (scalar channels).
+          Valid options are "swish" and "relu".
+          Default is "swish".
+    
     :param use_non_linearity: Whether to use a nonlinearity.
     :param auto_recompute: Whether to automatically recompute the kernel in each forward pass.
         By default it is recomputed each time.
@@ -217,23 +233,27 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
-        i.e. all l_filter with  |l_in - l_out | <= l_filter <= l_in + l_out.
+        i.e. all l_filter with \|l_in - l_out\| <= l_filter <= l_in + l_out.
         Options are:
+
         - dict with key "lmax" and int value which additionally defines a maximum l_filter.
         - dict with int-pairs as keys and list of ints as values that defines
-            for each pair of l_in and l_out the list of l_filter to use.
-            E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+          for each pair of l_in and l_out the list of l_filter to use.
+          E.g. {(0,0): [0], (1,1): [0,1], (0,1): [1]}
+
     :param p_radial_basis_type: The radial basis function type used for p-space.
         Valid options are "gaussian" (default), "cosine", "bessel".
         Note that this parameter is ignored if there is no basis filter using p-space.
     :param p_radial_basis_params: A (optional) dict of additional parameters for the radial basis function used for p-space.
         Valid keys in this dict are:
+
         - num_layers: Number of layers in the FC applied to the radial basis function.
-            If num_layers = 0 (default) then no FC is applied to the radial basis function.
+          If num_layers = 0 (default) then no FC is applied to the radial basis function.
         - num_units: Number of units (neurons) in each of the layer in the FC applied to the radial basis function.
-            No default, this parameter is required and must be >0 if num_layers > 0.
+          No default, this parameter is required and must be >0 if num_layers > 0.
         - activation_function: activation function used in the FC applied to the radial basis function,
-            valid are "relu" (default) or "swish"
+          valid are "relu" (default) or "swish"
+
         Note that this parameter is ignored if there is no basis filter using p-space.
     For additional parameters see EquivariantPLayer.
     """
@@ -266,14 +286,17 @@ def build_q_reduction_layer(type_in: Union[SphericalTensorType, List[int]], q_sa
         Note that Q_in is not explicitly given but derived form the length of this parameter.
         If this is None (default) then the input does not have q-space but only p-space.
     :param reduction: The type of reduction to use. Valid options are:
+
         - length_weighted_average: To use QLengthWeightedAvgPool (global length-weighted avg-pooling over q-space)
-            For additional parameters in param kwargs see QLengthWeightedAvgPool.
+          For additional parameters in param kwargs see QLengthWeightedAvgPool.
         - mean: To use global avg-pooling over q-space.
         - conv: To use an EquivariantPQLayer (and gated nonlinearity) without output q-space.
-            For additional parameters in param kwargs see build_pq_layer
-            (except the params type_out, q_sampling_schema_out).
+          For additional parameters in param kwargs see build_pq_layer
+          (except the params type_out, q_sampling_schema_out).
+
     :param auto_recompute: Whether to automatically recompute the kernels in each forward pass.
-    :return (reduction_layer, type_out)
+    :return (reduction_layer, type_out):
+
         - reduction_layer: The created q-reduction layer (nn.Module)
         - type_out: The spherical tensor type of the output feature map.
     """
@@ -311,6 +334,7 @@ def build_non_linearity(type_out: SphericalTensorType, tensor_non_lin='gated', s
         Valid options are "swish" and "relu".
         Default is "swish".
     :return (type_in, nonlinearity):
+
         - type_in: The expected spherical tensor type of the input feature map.
         - nonlinearity: the nonlinearity (as nn.Module) which accepts the input feature map.
     """

@@ -26,7 +26,6 @@ class SumKernel(nn.Module):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: kernel (Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim)
         """
         # (N_kernels x Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim)
@@ -45,7 +44,6 @@ class ConcatKernel(nn.Module):
                  P_kernel_size: int,
                  kernel_definitions: List[Tuple[SphericalTensorType, KernelDefinitionInterface]]):
         """
-
         :param type_out:
         :param type_in:
         :param Q_sampling_schema_out:
@@ -80,7 +78,6 @@ class ConcatKernel(nn.Module):
 
     def forward(self) -> torch.Tensor:
         """
-
         :return: kernel (Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim)
         """
         result_kernel = self.P_diff_vectors.new_zeros((self.Q_out, self.Q_in, self.num_P_diff_vectors, self.type_out.dim, self.type_in.dim))

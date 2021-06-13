@@ -52,6 +52,7 @@ class SphericalTensorType:
     def C(self) -> int:
         """
         Number of channels for all l (sum of all C_l).
+        
         :return:
         """
         return sum(C_l for l, C_l in enumerate(self.multiplicities))
@@ -59,6 +60,7 @@ class SphericalTensorType:
     def C_l(self, l) -> int:
         """
         Number of channels for order l.
+
         :param l:
         :return:
         """
@@ -67,6 +69,7 @@ class SphericalTensorType:
     def slice_l(self, l: int) -> slice:
         """
         Slice of an spherical tensor representing the data of all channels of a given order l.
+
         :param l:
         :return: Slice of length C_l*(2l+1)
         """
@@ -77,6 +80,7 @@ class SphericalTensorType:
     def slice_c_l(self, l: int, c_l: int) -> slice:
         """
         Slice of an spherical tensor representing the data of channel c_l of given order l.
+
         :param l:
         :param c_l: 0-based channel index (within the given order l)
         :return: Slice of length (2l+1)
@@ -148,7 +152,6 @@ class SphericalTensor:
 
     def __init__(self, data: torch.Tensor, type: SphericalTensorType, representation_dim=-1):
         """
-
         :param data: Dim (... x type.dim)
         :param type:
         :param representation_dim: index of the dimension that contains the spherical tensor representation
@@ -178,7 +181,6 @@ class SphericalTensor:
 
     def apply_operator(self, operator_matrix: torch.Tensor, batch_wise=False) -> 'SphericalTensor':
         """
-
         :param operator_matrix: ([N_op x ]type.dim x type.dim)
         :param batch_wise
             If True the first dimension of this is interpreted as batch dimension (has to be same as N_op) and the operator

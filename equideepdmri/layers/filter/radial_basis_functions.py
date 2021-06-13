@@ -19,7 +19,6 @@ class RadialBasis(nn.Module):
     """
     def __init__(self, basis_size: int, radial_basis_type_name: str):
         """
-
         :param basis_size: Size of the radial basis (relevant for the output dim when applying this radial basis to radii.
         :param radial_basis_type_name: Name of this type of radial basis, used for debugging only.
         """
@@ -45,7 +44,6 @@ class FC(nn.Module):
     """
     def __init__(self, dim_in: int, num_layers: int = 0, num_units: int = 0, activation_function=None):
         """
-
         :param dim_in: Number of input neurons.
             Note that dim_out = dim_in for num_layers = 0.
         :param num_layers: Number of layers (hidden layers + output layer). If num_layers == 0 then the FC is the identity,
@@ -82,6 +80,7 @@ class FC(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Applies the fully connected network to x.
+
         :param x: Input. Dim (radii_batch_size x dim_in)
         :return: Dim (radii_batch_size x dim_out)
             Note that dim_out = dim_in for num_layers = 0 and dim_out = num_units for num_layers > 0.
@@ -110,6 +109,7 @@ class FiniteElement_RadialBasis(RadialBasis):
         If num_layers == 0 then basis_size = len(reference_points) else basis_size = num_units.
 
         Note: based on e3nn.radial.FiniteElementFCModel and e3nn.radial.FiniteElementModel
+        
         :param reference_points: the reference points (list of scalars) of Dim (num_reference_points).
             The radial_basis_fn is applied to each of these scalars.
         :param radial_basis_fn: radial basis function applied to each of the reference points.
@@ -161,9 +161,8 @@ def Cosine_RadialBasis(basis_size: int, max_radius: float,
 
     Note: based on e3nn.radial.CosineBasisModel
 
-    :param basis_size
-    :param max_radius
-
+    :param basis_size:
+    :param max_radius:
     """
     reference_points = torch.linspace(0, max_radius, steps=basis_size)
     step = reference_points[1] - reference_points[0]
@@ -197,8 +196,9 @@ def Cosine_RadialBasisConstructor(num_layers: int = 0, num_units: int = 0, activ
 def Gaussian_RadialBasis(basis_size: int, max_radius: float, min_radius=0.,
                          num_layers: int = 0, num_units: int = 0, activation_function='relu'):
     """
-    Note: based on e3nn.radial.GaussianRadialModel
-    :param basis_size:
+    Note: based on e3nn.radial.GaussianRadialModel.
+    
+	:param basis_size:
     :param max_radius:
     :param min_radius:
     :param num_layers:
@@ -222,8 +222,9 @@ def Gaussian_RadialBasis(basis_size: int, max_radius: float, min_radius=0.,
 
 def gaussian_basis_fn(x, sigma):
     """
-    Note: based on e3nn.radial.GaussianRadialModel.basis
-    :param x:
+    Note: based on e3nn.radial.GaussianRadialModel.basis.
+
+	:param x:
     :param sigma:
     :return:
     """
@@ -242,7 +243,8 @@ class Bessel_RadialBasis(RadialBasis):
         \sqrt{\frac{2}{c}} \frac{sin(\frac{n \pi}{c} d)}{d} & 0 \leq x \leq max_radius \\
         0 & otherwise
     \end{cases}
-    c = max_radius (cutoff), n = basis_size, d = distance (in R_{+})"""
+    c = max_radius (cutoff), n = basis_size, d = distance (in R_{+})
+    """
     def __init__(self, basis_size: int, max_radius: float, epsilon=1e-8,
                  num_layers: int = 0, num_units: int = 0, activation_function=None):
         self.model: FC = FC(basis_size,
@@ -258,7 +260,6 @@ class Bessel_RadialBasis(RadialBasis):
 
     def basis(self, x: torch.Tensor) -> torch.Tensor:
         """
-
         :param x: Dim (radii_batch_size)
         :return: Dim (radii_batch_size x basis_size)
         """
@@ -269,7 +270,6 @@ class Bessel_RadialBasis(RadialBasis):
 
     def forward(self, x):
         """
-
         :param x: Dim (radii_batch_size)
         :return: Dim (radii_batch_size x model.dim_out)
         """

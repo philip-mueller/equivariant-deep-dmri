@@ -14,9 +14,9 @@ class Q_SamplingSchema:
         :param b0_eps: eps value such that all q-vectors with length <b0_eps are treated as b=0.
             Only used if b0_mask = None.
         :param normalize: Whether to normalize the q-length to max=1
-        :radial_basis_size: Size of the radial basis for this sampling scheme, default is number of different q-lengths
+        :param radial_basis_size: Size of the radial basis for this sampling scheme, default is number of different q-lengths
             (max Q) or 0 if Q=1.
-        :radial_basis_eps: Minimum difference between q-length to consider them as different.
+        :param radial_basis_eps: Minimum difference between q-length to consider them as different.
         """
         if not isinstance(q_vectors, torch.Tensor):
             q_vectors = torch.tensor(q_vectors)
@@ -82,7 +82,6 @@ class Q_SamplingSchema:
     @property
     def q_lengths(self) -> torch.Tensor:
         """
-
         :return: Dim (Q)
         """
         return torch.norm(self.q_vectors, p=2, dim=1)
@@ -115,6 +114,7 @@ class Q_SamplingSchema:
     def extract_b0_channels(self, tensor_field: torch.Tensor) -> torch.Tensor:
         """
         Extracts only the Q channels with b=0 (based on self) of the given tensor field.
+        
         :param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
         :return: (N x dim_in x num_b0_channels x P_z x P_y x P_x)
         """
@@ -147,6 +147,7 @@ class Q_SamplingSchema:
         """
         Combines all b=0 channels to a single b=0 channel, leaves the other channels unchanged.
         The combined b=0 channel will be the first channel.
+        
         :param tensor_field: (N x dim_in x Q x P_z x P_y x P_x)
         :param combination_fn: Function to combine the different b=0 channels. Default: mean
         :param kwargs:
