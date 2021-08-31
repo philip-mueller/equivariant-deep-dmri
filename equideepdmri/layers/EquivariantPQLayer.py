@@ -20,6 +20,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
     Input: (N x dim_in x [Q_in] x P_z x P_y x P_x)
     Output: (N x dim_out x [Q_out] x P_z_out x P_y_out x P_x_out)
     """
+
     def __init__(self,
                  type_in: Union[SphericalTensorType, List[int]],
                  type_out: Union[SphericalTensorType, List[int]],
@@ -35,6 +36,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
                  normalize_q_sampling_schema_in=True,
                  normalize_q_sampling_schema_out=True,
                  scalar_bias=True,
+                 transposed=False,
                  **kernel_kwargs):
         """
         Linear layer for data with p- and q-space
@@ -118,6 +120,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
             If true, the vectors in the output sampling schema are normalized to lengths between 0 and 1.
             If the output sampling schema only contains a single 0-vector, no normalization is applied.
         :param scalar_bias: Whether to use a learned bias for each scalar (order 0) output channel.
+        :param transposed: Whether to perform a transposed convolution using the equivariant kernel
         :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
             for a paths form input orders l_in to output orders l_out.
             Defaults to using all possible filter orders,
@@ -259,6 +262,7 @@ class EquivariantPQLayer(nn.Module, Recomputable):
         self.p_stride = p_stride
         self.p_dilation = p_dilation
         self.groups = groups
+        self.transposed = transposed
 
         # ----- other parameters -----
         self.auto_recompute_kernel = auto_recompute_kernel
@@ -294,14 +298,15 @@ class EquivariantPQLayer(nn.Module, Recomputable):
     def recompute(self):
         self.computed_kernel = None
         self.computed_kernel = self.kernel()  # (Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim)
-        assert self.computed_kernel.size() == (self.Q_out, self.Q_in, self.num_P_diff_vectors, self.type_out.dim, self.type_in.dim), \
+        assert self.computed_kernel.size() == (
+            self.Q_out, self.Q_in, self.num_P_diff_vectors, self.type_out.dim, self.type_in.dim), \
             f'Invalid size for computed kernel. ' \
             f'Expected size {(self.Q_out, self.Q_in, self.num_P_diff_vectors, self.type_out.dim, self.type_in.dim)} ' \
             f'=> (Q_out x Q_in x num_P_diff_vectors x type_out.dim x type_in.dim) ' \
             f'but size was {self.computed_kernel.size()}.'
 
         # ((type_out.dim * Q_out) x (type_in.dim * Q_in) x P_kernel_size x P_kernel_size x P_kernel_size)
-        self.computed_kernel = self.computed_kernel.permute(3, 0, 4, 1, 2)\
+        self.computed_kernel = self.computed_kernel.permute(3, 0, 4, 1, 2) \
             .reshape((self.type_out.dim * self.Q_out), (self.type_in.dim * self.Q_in),
                      self.p_kernel_size, self.p_kernel_size, self.p_kernel_size)
 
@@ -350,8 +355,13 @@ class EquivariantPQLayer(nn.Module, Recomputable):
         # (N x (type_in.dim * Q_in) x P_size_z_in x P_size_y_in x P_size_x_in)
         x = x.view(-1, (self.type_in.dim * self.Q_in), *P_size_in)
         # (N x (type_out.dim * Q_out) x P_size_z_out x P_size_y_out x P_size_x_out)
-        x = F.conv3d(x, self.computed_kernel,
-                     padding=self.p_padding, stride=self.p_stride, dilation=self.p_dilation, groups=self.groups)
+        if self.transposed:
+            computed_kernel = self.computed_kernel.permute(1, 0, 2, 3, 4)
+            x = F.conv_transpose3d(x, computed_kernel, padding=self.p_padding, stride=self.p_stride,
+                                   dilation=self.p_dilation, groups=self.groups)
+        else:
+            x = F.conv3d(x, self.computed_kernel,
+                         padding=self.p_padding, stride=self.p_stride, dilation=self.p_dilation, groups=self.groups)
 
         if self.auto_recompute_kernel:
             self.computed_kernel = None  # free memory of computed kernel
@@ -410,6 +420,7 @@ def EquivariantPLayer(*args, **kwargs):
         If this parameter is set to false, it is not recomputed and the method recompute() needs to be called
         explicitly after parameters of this nn.Module have been updated.
     :param scalar_bias: Whether to use a learned bias for each scalar (order 0) output channel.
+    :param transposed: Whether to perform a transposed convolution using the equivariant kernel
     :param kernel_selection_rule: Rule defining which angular filter orders (l_filter) to use
         for a paths form input orders l_in to output orders l_out.
         Defaults to using all possible filter orders,
