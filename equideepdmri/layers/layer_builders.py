@@ -6,9 +6,9 @@ import torch
 from torch import nn
 from e3nn.non_linearities.rescaled_act import sigmoid
 from e3nn.non_linearities.gated_block import GatedBlock
-from e3nn.batchnorm import BatchNorm as E3NNBatchNorm
 
 from equideepdmri.layers.EquivariantPQLayer import EquivariantPQLayer
+from equideepdmri.layers.BatchNormalization import BatchNorm
 from equideepdmri.layers.QLengthWeightedPool import QLengthWeightedAvgPool
 from equideepdmri.utils.q_space import Q_SamplingSchema
 from equideepdmri.utils.spherical_tensor import SphericalTensorType
@@ -396,33 +396,3 @@ class GatedBlockNonLin(GatedBlock):
     def forward(self, x):
         x = super(GatedBlockNonLin, self).forward(x, dim=1)
         return x
-
-
-class BatchNorm(E3NNBatchNorm):
-    def __init__(self, rs, eps=1e-5, momentum=0.1, affine=True, reduce='mean', normalization='component'):
-        """
-        Adapted batch normalization from e3nn library:
-
-        Batch normalization layer for orthonormal representations
-        It normalizes by the norm of the representations.
-        Not that the norm is invariant only for orthonormal representations.
-        Irreducible representations `o3.irr_repr` are orthonormal.
-
-        input shape : [batch, stacked orthonormal representations, q_dim, [spacial dimensions]]
-
-        :param rs: list of tuple (multiplicity, dimension)
-        :param eps: avoid division by zero when we normalize by the variance
-        :param momentum: momentum of the running average
-        :param affine: do we have weight and bias parameters
-        :param reduce: method to contract over the spacial dimensions
-        """
-        rs = [(m, d + 1) for m, d in rs if m * (d + 1) > 0]
-        super().__init__(rs, eps, momentum, affine, reduce, normalization)
-
-    def forward(self, data):
-        """
-        :param data: [batch, stacked features, q_dim, x, y, z]
-        """
-        data = data.permute(0, 2, 3, 4, 5, 1)
-        output = super().forward(data)
-        return output.permute(0, 5, 1, 2, 3, 4).contiguous()
