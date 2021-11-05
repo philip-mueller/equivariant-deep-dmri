@@ -3,11 +3,12 @@ from functools import partial
 from typing import Union, List
 
 import torch
+from torch import nn
 from e3nn.non_linearities.rescaled_act import sigmoid
 from e3nn.non_linearities.gated_block import GatedBlock
-from torch import nn
 
 from equideepdmri.layers.EquivariantPQLayer import EquivariantPQLayer
+from equideepdmri.layers.BatchNormalization import BatchNorm
 from equideepdmri.layers.QLengthWeightedPool import QLengthWeightedAvgPool
 from equideepdmri.utils.q_space import Q_SamplingSchema
 from equideepdmri.utils.spherical_tensor import SphericalTensorType
@@ -22,6 +23,9 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
                    q_sampling_schema_out: Union[Q_SamplingSchema, torch.Tensor, List, None],
                    non_linearity_config=None,
                    use_non_linearity=True,
+                   batch_norm_config=None,
+                   use_batch_norm=True,
+                   transposed=False,
                    auto_recompute=True,
                    **kernel_kwargs) -> nn.Module:
     """
@@ -86,6 +90,15 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
           Default is "swish".
 
     :param use_non_linearity: Whether to use a nonlinearity.
+    :param batch_norm_config: Dict with the following optional keys:
+
+        - eps: avoid division by zero when we normalize by the variance
+        - momentum: momentum of the running average
+        - affine: do we have weight and bias parameters
+        - reduce: method to contract over the spacial dimensions
+
+    :param use_batch_norm: Whether to use a batch normalization
+    :param transposed: Whether to perform a transposed convolution using the equivariant kernel
     :param auto_recompute: Whether to automatically recompute the kernel in each forward pass.
         By default it is recomputed each time.
         If this parameter is set to false, it is not recomputed and the method recompute() needs to be called
@@ -166,28 +179,41 @@ def build_pq_layer(type_in: Union[SphericalTensorType, List[int]],
     type_in = SphericalTensorType.from_multiplicities_or_type(type_in)
     type_out = SphericalTensorType.from_multiplicities_or_type(type_out)
 
-    if use_non_linearity:
-        if non_linearity_config is None:
-            non_linearity_config = {}
+    if batch_norm_config is None:
+        batch_norm_config = {}
+    if non_linearity_config is None:
+        non_linearity_config = {}
 
+    if use_non_linearity:
         type_non_lin_in, non_linearity = build_non_linearity(type_out, **non_linearity_config)
         conv = EquivariantPQLayer(type_in, type_non_lin_in,
-                      kernel_definition=kernel,
-                      p_kernel_size=p_kernel_size,
-                      q_sampling_schema_in=q_sampling_schema_in,
-                      q_sampling_schema_out=q_sampling_schema_out,
-                      auto_recompute_kernel=auto_recompute,
-                      **kernel_kwargs)
-
-        return nn.Sequential(OrderedDict([('conv', conv), ('non_linearity', non_linearity)]))
+                                  kernel_definition=kernel,
+                                  p_kernel_size=p_kernel_size,
+                                  q_sampling_schema_in=q_sampling_schema_in,
+                                  q_sampling_schema_out=q_sampling_schema_out,
+                                  transposed=transposed,
+                                  auto_recompute_kernel=auto_recompute,
+                                  **kernel_kwargs)
+        if use_batch_norm:
+            batch_norm = BatchNorm(type_non_lin_in.Rs, **batch_norm_config)
+            return nn.Sequential(
+                OrderedDict([('conv', conv), ('batch_norm', batch_norm), ('non_linearity', non_linearity)]))
+        else:
+            return nn.Sequential(OrderedDict([('conv', conv), ('non_linearity', non_linearity)]))
     else:
-        return EquivariantPQLayer(type_in, type_out,
-                      kernel_definition=kernel,
-                      p_kernel_size=p_kernel_size,
-                      q_sampling_schema_in=q_sampling_schema_in,
-                      q_sampling_schema_out=q_sampling_schema_out,
-                      auto_recompute_kernel=auto_recompute,
-                      **kernel_kwargs)
+        conv = EquivariantPQLayer(type_in, type_out,
+                                  kernel_definition=kernel,
+                                  p_kernel_size=p_kernel_size,
+                                  q_sampling_schema_in=q_sampling_schema_in,
+                                  q_sampling_schema_out=q_sampling_schema_out,
+                                  transposed=transposed,
+                                  auto_recompute_kernel=auto_recompute,
+                                  **kernel_kwargs)
+        if use_batch_norm:
+            batch_norm = BatchNorm(type_out.Rs, **batch_norm_config)
+            return nn.Sequential(OrderedDict([('conv', conv), ('batch_norm', batch_norm)]))
+        else:
+            return conv
 
 
 def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
@@ -195,6 +221,9 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
                   kernel_size: int,
                   non_linearity_config=None,
                   use_non_linearity=True,
+                  batch_norm_config=None,
+                  use_batch_norm=True,
+                  transposed=False,
                   auto_recompute=True,
                   **kernel_kwargs):
     """
@@ -226,6 +255,15 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
           Default is "swish".
     
     :param use_non_linearity: Whether to use a nonlinearity.
+    :param batch_norm_config: Dict with the following optional keys:
+
+        - eps: avoid division by zero when we normalize by the variance
+        - momentum: momentum of the running average
+        - affine: do we have weight and bias parameters
+        - reduce: method to contract over the spacial dimensions
+
+    :param use_batch_norm: Whether to use a batch normalization
+    :param transposed: Whether to perform a transposed convolution using the equivariant kernel
     :param auto_recompute: Whether to automatically recompute the kernel in each forward pass.
         By default it is recomputed each time.
         If this parameter is set to false, it is not recomputed and the method recompute() needs to be called
@@ -262,6 +300,9 @@ def build_p_layer(type_in: Union[SphericalTensorType, List[int]],
                           q_sampling_schema_in=None, q_sampling_schema_out=None,
                           non_linearity_config=non_linearity_config,
                           use_non_linearity=use_non_linearity,
+                          batch_norm_config=batch_norm_config,
+                          use_batch_norm=use_batch_norm,
+                          transposed=transposed,
                           auto_recompute=auto_recompute,
                           **kernel_kwargs)
 
@@ -316,7 +357,8 @@ def build_q_reduction_layer(type_in: Union[SphericalTensorType, List[int]], q_sa
         raise ValueError(f'q-reduction "{reduction}" not supported.')
 
 
-def build_non_linearity(type_out: SphericalTensorType, tensor_non_lin='gated', scalar_non_lin='swish') -> (SphericalTensorType, nn.Module):
+def build_non_linearity(type_out: SphericalTensorType, tensor_non_lin='gated', scalar_non_lin='swish') -> (
+        SphericalTensorType, nn.Module):
     """
     Builds a nonlinearity for spherical tensor feature maps.
     Currently only the gated nonlinearity is supported.
