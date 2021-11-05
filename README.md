@@ -1,7 +1,8 @@
 # Rotation-Equivariant Deep Learning for Diffusion MRI
+[[arXiv:2102.06942 - Rotation-Equivariant Deep Learning for Diffusion MRI](https://arxiv.org/abs/2102.06942)]
+
 Rotationally and translationally equivariant layers and networks for deep learning on diffusion MRI (dMRI) scans.
 
-The related paper will be published soon, we will add the link here.
 In this paper we showed that adding rotational equivariance to CNNs can improve the performance on prediction tasks
 on dMRI scans. By publishing our code, we want to enable anyone to profit from the benefits of equivariance
 as our layers can be used off the shelf without understanding the mathematical background.
